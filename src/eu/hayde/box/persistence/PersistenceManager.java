@@ -77,7 +77,7 @@ public class PersistenceManager {
     public void openConnection(String driver, String url, String dbuser, String dbpassword) throws ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException {
         Class.forName(driver).newInstance();
         connection = DriverManager.getConnection(url, dbuser, dbpassword);
-
+        
         // we place the information down here. Cause if the connection failed
         // there will be no use of this info
         connectionInfo.driver = driver;
