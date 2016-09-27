@@ -11,6 +11,9 @@ import java.lang.annotation.Target;
 @Target(value = {ElementType.METHOD, ElementType.FIELD})
 @Retention(value = RetentionPolicy.RUNTIME)
 /**
+ * marker, if this field is optional (not required);
+ *
+ * Position: field (variable <-> column)
  *
  * @author can.senturk
  * @version 2012/06/29

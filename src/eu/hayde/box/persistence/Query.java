@@ -54,7 +54,7 @@ public class Query {
         // here we will parse the incoming sql query to check, if it is already
         // or not.
         //
-        // if the the tabledefinition is null: only plain sql is allowed
+        // if the tabledefinition is null: only plain sql is allowed
         if (tableDefinition != null) {
             this.queryStatement = tableDefinition.prepareQuery(queryStatement);
         }

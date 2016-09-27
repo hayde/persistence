@@ -155,6 +155,13 @@ public class PersistenceManager {
             throw new ClassAlreadyKnownToPersistenceException("The class '" + theClass.getCanonicalName() + "' is already added to the persistence. You need to remove it first to refresh the information!");
         } else {
             TableDefinition table = new TableDefinition(theClass);
+
+            if (this.connectionInfo.driver.contains("mysql")) {
+                table.setFieldDelimiter("`");
+
+            } else if (this.connectionInfo.driver.contains("postgresql")) {
+                table.setFieldDelimiter("");
+            }
             table.setGenericTable(isGeneric);
             // load named queries and check, if they are already known to the system
             NamedQueries newNamedQueries = table.getNamedQueries();

@@ -75,6 +75,7 @@ public class TableDefinition {
     private String idField = null;
     private HashMap<String, ColumnDefinition> columns = new HashMap<String, ColumnDefinition>();
     private NamedQueries namedQueries = new NamedQueries();
+    private String fd;
 
     public TableDefinition(Class obj) throws EntityAnnotationMissingException,
             TableAnnotationMissingException,
@@ -90,6 +91,16 @@ public class TableDefinition {
 
         this._loadColumns(obj);
 
+        fd = "`";
+
+    }
+
+    public void setFieldDelimiter(String par_field_delimiter) {
+        fd = par_field_delimiter;
+    }
+
+    public String getFieldDelimiter() {
+        return fd;
     }
 
     public boolean isGenericTable() {
@@ -149,7 +160,6 @@ public class TableDefinition {
             // it is an insert
             returnValue = _createInsertSQL(objectDefinition);
 
-
         } else {
             // it is an update
             returnValue = _createUpdateSQL(objectDefinition);
@@ -197,7 +207,7 @@ public class TableDefinition {
     }
 
     public String getSQLAll() {
-        return "SELECT * `" + tableName + "`";
+        return "SELECT * " + fd + tableName + fd + "";
     }
 
     /**
@@ -247,7 +257,6 @@ public class TableDefinition {
                                 && currentColumn.getValueType() == Double.class) {
                             currentObjectValue = ((java.math.BigDecimal) currentObjectValue).doubleValue();
                         }
-
 
                     }
                     currentObjectField.setAccessible(true);
@@ -332,8 +341,8 @@ public class TableDefinition {
 
             if (curColumn.isKey()) {
 
-                returnValue = "SELECT * FROM `" + this.tableName + "` WHERE `"
-                        + curColumn.getDbName() + "`="
+                returnValue = "SELECT * FROM " + fd + this.tableName + fd + " WHERE "
+                        + fd + curColumn.getDbName() + fd + "="
                         + curColumn.quotedValue();
             }
         }
@@ -342,7 +351,7 @@ public class TableDefinition {
     }
 
     public String getSQLDummy() {
-        return "SELECT * FROM `" + this.tableName + "` WHERE 1=2";
+        return "SELECT * FROM " + fd + this.tableName + fd + " WHERE 1=2";
     }
 
     private String _createDeleteSQL(Collection<ColumnDefinition> par) {
@@ -354,8 +363,8 @@ public class TableDefinition {
 
             if (curColumn.isKey()) {
 
-                returnValue = "DELETE FROM `" + this.tableName + "` WHERE `"
-                        + curColumn.getDbName() + "`="
+                returnValue = "DELETE FROM " + fd + this.tableName + fd + " WHERE "
+                        + fd + curColumn.getDbName() + fd + "="
                         + curColumn.quotedValue() + "";
             }
         }
@@ -379,13 +388,13 @@ public class TableDefinition {
                     ValueList.append(", ");
                 }
 
-                ValueIndex.append("`").append(curColumn.getDbName()).append("`");
+                ValueIndex.append(fd).append(curColumn.getDbName()).append(fd);
                 ValueList.append(curColumn.quotedValue());
                 elementCounter++;
             }
         }
 
-        returnValue = "INSERT INTO `" + this.tableName + "` ( " + ValueIndex.toString() + " ) VALUES ( " + ValueList.toString() + " )";
+        returnValue = "INSERT INTO " + fd + this.tableName + fd + " ( " + ValueIndex.toString() + " ) VALUES ( " + ValueList.toString() + " )";
 
         return returnValue;
     }
@@ -402,7 +411,7 @@ public class TableDefinition {
 
             if (curColumn.isKey()) {
 
-                whereStatement = " WHERE `" + curColumn.getDbName() + "` = " + curColumn.quotedValue() + "";
+                whereStatement = " WHERE " + fd + curColumn.getDbName() + fd + " = " + curColumn.quotedValue() + "";
 
             } else {
 
@@ -410,13 +419,13 @@ public class TableDefinition {
                     ValueList.append(", ");
 
                 }
-                ValueList.append("`").append(curColumn.getDbName()).append("` = ");
+                ValueList.append(fd).append(curColumn.getDbName()).append(fd).append(" = ");
                 ValueList.append(curColumn.quotedValue());
                 elementCount++;
             }
         }
 
-        returnValue = "UPDATE `" + tableName + "` SET " + ValueList.toString() + " " + whereStatement;
+        returnValue = "UPDATE " + fd + tableName + fd + " SET " + ValueList.toString() + " " + whereStatement;
 
         return returnValue;
     }
@@ -519,7 +528,7 @@ public class TableDefinition {
         boolean alreadySQL = false;
 
         // 1. replace the class name with the table name
-        returnValue = returnValue.replaceAll(this.getEntityClass().getSimpleName() + "(\\s)(\\w)", "`" + this.tableName + "`");
+        returnValue = returnValue.replaceAll(this.getEntityClass().getSimpleName() + "(\\s)(\\w)", fd + this.tableName + fd);
 
         // 2. replace all sum( field ) with the constructor CAST( sum(field) AS fieldOutput ) as field
         returnValue = returnValue.replaceAll("([^\\w])hyd.sum\\(([^\\)]+)\\)([^\\w]|$)", "$1CAST( sum( $2 ) AS fieldtype:$2 ) AS $2$3");
@@ -533,7 +542,7 @@ public class TableDefinition {
                 returnValue = returnValue.replaceAll("\\s+(AS|as|As)\\s+fieldtype:(\\w+\\." + theCurrentColumn.getJavaName() + ")([^\\w])", " AS " + theCurrentColumn.getCastType() + "$3");
 
                 returnValue = returnValue.replaceAll("(\\w+)(\\.)(" + theCurrentColumn.getJavaName() + ")([^\\w]|$)",
-                        "`" + theCurrentColumn.getDbName() + "`$4");
+                        fd + theCurrentColumn.getDbName() + fd + "$4");
 
             }
         }
@@ -544,7 +553,6 @@ public class TableDefinition {
         // 4. finally we have to place the SELECT u FROM into a real
         //  SELECT * FROM
         returnValue = returnValue.replaceAll("(?i)SELECT(\\s+)(\\w+)(\\s+)FROM", "SELECT * FROM");
-
 
         return returnValue;
     }

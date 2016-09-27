@@ -46,7 +46,6 @@ public class StatelessSession {
             statistics.incSessionOpenCount();
         }
 
-
     }
 
     // disable simple creation of this class.
@@ -96,6 +95,14 @@ public class StatelessSession {
         return this.getTableDefinition(obj).getSQLAll();
     }
 
+    /**
+     * will run a sql statement (in general UPDATE, ALTER TABLE, etc) and will
+     * return the number of changed rows
+     *
+     * @param sqlStatement
+     * @return number of rows, that has been changed
+     * @throws SQLException
+     */
     public int executeSQL(String sqlStatement) throws SQLException {
         int returnValue = 0;
         Statement statement = connection.createStatement();
@@ -158,7 +165,7 @@ public class StatelessSession {
             throw sqlEx;
         }
 
-        if (rset.first()) {
+        if (rset.isBeforeFirst()) {
             // now fill the data to the system
             this._loadValues(container, rset);
         } else {
@@ -311,7 +318,6 @@ public class StatelessSession {
     private String checkTable(TableDefinition tableDefinition) throws ClassUnknownToPersistence, SQLException, InternalAccessException {
 
         // create a new instance of the object tyme
-
         String returnValue = "";
 
         // create the sql statement for retrieving the structure
