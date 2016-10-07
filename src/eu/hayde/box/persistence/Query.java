@@ -5,7 +5,11 @@ package eu.hayde.box.persistence;
 
 import eu.hayde.box.persistence.TableDefinition.InternalAccessException;
 import eu.hayde.box.persistence.execptions.HaydePersistenceException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,13 +67,15 @@ public class Query {
     public void setParameter(String parameter, Object value) throws UnknownParameterInQueryException {
         if (!queryStatement.contains(":" + parameter)) {
             throw new UnknownParameterInQueryException("The parameter '" + parameter + "' is unknown to Query: " + queryStatement);
-        } else {
+        }
+        else {
             if (value instanceof java.util.Date) {
                 java.sql.Date sqlDate;
                 sqlDate = new java.sql.Date(((java.util.Date) value).getTime());
                 queryStatement = queryStatement.replace(":" + parameter, sqlDate.toString());
 
-            } else {
+            }
+            else {
                 queryStatement = queryStatement.replace(":" + parameter, value.toString());
 
             }
@@ -81,7 +87,8 @@ public class Query {
         List returnValue;
         if (tableDefinition == null) {
             returnValue = this._executeSQLObject();
-        } else {
+        }
+        else {
             returnValue = this._executeSQL();
         }
         return returnValue;
@@ -92,25 +99,31 @@ public class Query {
 
         if (returnValue.size() > 1) {
             throw new ExpectedUniqueResultException("Expected Unique result, but received " + returnValue.size() + " elements for query statement: " + queryStatement);
-        } else if (returnValue.isEmpty()) {
+        }
+        else if (returnValue.isEmpty()) {
             return null;
         }
         return returnValue.get(0);
     }
 
+    
     public int executeUpdate() throws SQLException {
-        Statement stmt = connection.createStatement();
-        // statistics ...
-        statistics.writeToLogFile(queryStatement);
         int returnValue = 0;
-        try {
-            returnValue = stmt.executeUpdate(queryStatement);
-        } catch (SQLException sqlEx) {
+        if (queryStatement != null && !queryStatement.equals("")) {
+            Statement stmt = connection.createStatement();
+            // statistics ...
+            statistics.writeToLogFile(queryStatement);
+
+            try {
+                returnValue = stmt.executeUpdate(queryStatement);
+            }
+            catch (SQLException sqlEx) {
+                stmt.close();
+                statistics.writeToLogFile(sqlEx.getMessage());
+                throw sqlEx;
+            }
             stmt.close();
-            statistics.writeToLogFile(sqlEx.getMessage());
-            throw sqlEx;
         }
-        stmt.close();
         return returnValue;
     }
 
@@ -121,7 +134,8 @@ public class Query {
         statistics.writeToLogFile(queryStatement);
         try {
             rset = stmt.executeQuery(queryStatement);
-        } catch (SQLException sqlEx) {
+        }
+        catch (SQLException sqlEx) {
             stmt.close();
             statistics.writeToLogFile(sqlEx.getMessage());
             throw sqlEx;
@@ -137,11 +151,13 @@ public class Query {
             try {
                 newObject = (EntityClass) tableDefinition.getEntityClass().newInstance();
                 tableDefinition.loadValuesFromResultSet(newObject, rset);
-            } catch (InstantiationException ex) {
+            }
+            catch (InstantiationException ex) {
                 rset.close();
                 stmt.close();
                 throw new InternalAccessException(ex.getMessage());
-            } catch (IllegalAccessException ex) {
+            }
+            catch (IllegalAccessException ex) {
                 rset.close();
                 stmt.close();
                 throw new InternalAccessException(ex.getMessage());
@@ -165,7 +181,8 @@ public class Query {
         statistics.writeToLogFile(queryStatement);
         try {
             rset = stmt.executeQuery(queryStatement);
-        } catch (SQLException sqlEx) {
+        }
+        catch (SQLException sqlEx) {
             stmt.close();
             statistics.writeToLogFile(sqlEx.getMessage());
             throw sqlEx;

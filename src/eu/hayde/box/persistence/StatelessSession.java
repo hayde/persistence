@@ -53,10 +53,15 @@ public class StatelessSession {
     }
 
     public void close() {
+
         // statistics ...
         if (statistics.isStatisticsEnabled()) {
             statistics.incSessionCloseCount();
         }
+        this.tables = null;
+        this.namedQueries = null;
+        this.connection = null;
+        this.statistics = null;
     }
 
     @Override
