@@ -210,4 +210,8 @@ public class Query {
 
         return returnValue;
     }
+    
+//    public String toString(){
+//        return this.queryStatement; 
+//    }
 }
