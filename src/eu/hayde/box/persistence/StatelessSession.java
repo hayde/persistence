@@ -108,32 +108,6 @@ public class StatelessSession {
         return returnValue;
     }
     
-//    public ResultSet executeQuery(String sqlStatement) throws SQLException {
-//        ResultSet returnValue = null;
-//        Statement statement = connection.createStatement();
-//
-//        // statistics ...
-//        statistics.writeToLogFile(sqlStatement);
-//        returnValue = statement.executeQuery(sqlStatement);
-//        statement.close();
-//        return returnValue;
-//    }
-    
-//    public boolean execute(String sqlStatement) throws SQLException {
-//        boolean returnValue;
-//        Statement statement = connection.createStatement();
-//
-//        // statistics ...
-//        statistics.writeToLogFile(sqlStatement);
-//        returnValue = statement.execute(sqlStatement);
-//        statement.close();
-//        return returnValue;
-//    }
-    
-    
-    
-
-
     /**
      * will load a object to the given object class type If not existing, it
      * will return a null object
