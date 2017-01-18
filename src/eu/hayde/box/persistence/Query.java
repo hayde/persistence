@@ -105,7 +105,6 @@ public class Query {
         }
         return returnValue.get(0);
     }
-
     
     public int executeUpdate() throws SQLException {
         int returnValue = 0;
@@ -142,9 +141,7 @@ public class Query {
         }
 
         List<EntityClass> returnValue = new ArrayList<EntityClass>();
-
         while (rset.next()) {
-
             // if we now what type of class is expected, we could return the
             // right element. but if not ... look to else
             EntityClass newObject;
@@ -211,7 +208,7 @@ public class Query {
         return returnValue;
     }
     
-//    public String toString(){
-//        return this.queryStatement; 
-//    }
+    public String toString(){
+        return this.queryStatement; 
+    }
 }
