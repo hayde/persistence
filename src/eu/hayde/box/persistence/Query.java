@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * here we wills store queries of the session object.
+ * here we will store queries of the session object.
  *
  * @author can.senturk
  * @version	2012/07/01
@@ -82,6 +82,24 @@ public class Query {
         }
     }
 
+    /**
+     * if there is a tableDefinition (if you introduced your objects to the
+     * persistence manager) you receive a list of objects in a list.
+     *
+     * <u>example:</u><p/>
+     * you created the query statement like this:
+     * <p/>
+     * {@code
+     * Query query = session.createSQLQuery( "SELECT * FROM address",
+     * Address.class);}
+     * <p>
+     * {@code
+     * List<Address> = query.list();
+     * }
+     *
+     * @return @throws SQLException
+     * @throws eu.hayde.box.persistence.TableDefinition.InternalAccessException
+     */
     public List list() throws SQLException, InternalAccessException {
 
         List returnValue;
